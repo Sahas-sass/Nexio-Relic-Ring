@@ -2,7 +2,7 @@
 
 /**
  * 1. Convert a string of text into an array of ASCII numbers.
- * Example: "H" -> [72]
+ * Example: "Hello" -> [72, 101, 108, 108, 111]
  */
 export function textToAscii(payload: string): number[] {
     const asciiArray = [];
@@ -14,21 +14,20 @@ export function textToAscii(payload: string): number[] {
 
 /**
  * 2. Convert an array of ASCII numbers into a target base (codex) as strings.
- * Example: 72 to Base 5 -> "242"
+ * Example: 72 to Base 14 -> "52"
+ * Enforces uppercase characters for bases > 10 (e.g., "7A").
  */
 export function asciiToCodex(asciiArray: number[], targetBase: number): string[] {
     return asciiArray.map(asciiNum => {
-        // .toString(base) is a built-in JS feature that handles base conversion!
-        return asciiNum.toString(targetBase);
+        return asciiNum.toString(targetBase).toUpperCase();
     });
 }
 
 /**
  * 3. Serialize the codex array into a flat binary stream for the space void.
- * (This converts the string representations directly into binary)
+ * Converts each character of the codex string into an 8-bit binary representation.
  */
 export function codexToBinaryStream(codexArray: string[]): string {
-    // Converts each character of the codex strings into binary and joins them
     return codexArray.map(str => {
         let binaryStr = "";
         for (let i = 0; i < str.length; i++) {
@@ -44,7 +43,6 @@ export function codexToBinaryStream(codexArray: string[]): string {
  */
 export function codexToAscii(codexArray: string[], sourceBase: number): number[] {
     return codexArray.map(codexStr => {
-        // parseInt(string, base) converts it back to standard Base 10 (ASCII)
         return parseInt(codexStr, sourceBase);
     });
 }
@@ -55,4 +53,32 @@ export function codexToAscii(codexArray: string[], sourceBase: number): number[]
  */
 export function asciiToText(asciiArray: number[]): string {
     return String.fromCharCode(...asciiArray);
+}
+
+
+// ==========================================
+// MASTER WRAPPER FUNCTIONS (For Module 1)
+// ==========================================
+
+/**
+ * MASTER SEND FUNCTION
+ * Converts raw text all the way to a binary stream for a specific destination planet.
+ */
+export function encodePayloadForVoid(payload: string, targetBase: number): string {
+    const ascii = textToAscii(payload);
+    const codex = asciiToCodex(ascii, targetBase);
+    const binary = codexToBinaryStream(codex);
+    
+    return binary; 
+}
+
+/**
+ * MASTER RECEIVE FUNCTION
+ * Converts an array of codex strings back into readable text upon arrival.
+ */
+export function decodePayloadFromVoid(codexArray: string[], sourceBase: number): string {
+    const ascii = codexToAscii(codexArray, sourceBase);
+    const text = asciiToText(ascii);
+    
+    return text;
 }
