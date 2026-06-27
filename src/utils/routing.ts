@@ -7,32 +7,28 @@ export interface Edge {
   latency: number;
 }
 
-export const buildNetworkGraph = () => {
+export const buildNetworkGraph = (deadNodes: string[] = []) => {
   const config = getConfig();
   const graph: Record<string, Edge[]> = {};
 
-  // Initialize graph
-  config.nodes.forEach(node => {
-    graph[node.id] = [];
-  });
+  // Filter out dead nodes 
+  const activeNodes = config.nodes.filter(n => !deadNodes.includes(n.id));
 
-  // Calculate valid hops between all pairs
-  for (let i = 0; i < config.nodes.length; i++) {
-    for (let j = 0; j < config.nodes.length; j++) {
-      if (i === j) continue;
+  activeNodes.forEach(node => { graph[node.id] = []; });
 
-      const n1 = config.nodes[i];
-      const n2 = config.nodes[j];
+  activeNodes.forEach(n1 => {
+    activeNodes.forEach(n2 => {
+      if (n1.id === n2.id) return;
 
       const L = calculateVoidDistance(n1, n2, config.universe_metadata);
 
-      // Enforce Lmax constraint 
+      // Enforce Lmax constraint [cite: 75]
       if (L <= config.universe_metadata.max_void_hop_distance_km) {
         const latency = calculateVoidTime(n1, n2, L, config.universe_metadata);
         graph[n1.id].push({ to: n2.id, latency });
       }
-    }
-  }
+    });
+  });
   return graph;
 };
 
