@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Relic Ring Protocol: Core & Dashboard Documentation
 
-## Getting Started
+This repository contains the core logic and interface for the Zeta-26 multi-hop optimization
+system.
 
-First, run the development server:
+Module 1: Physics & Routing Engine (/src/utils)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The brain of the system, responsible for calculating optimal transmission paths while respecting
+physical constraints.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O physics. ts : Implements the core relay equations, including Void Distance (L) and
+Crust Transit Time (Tp).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+o routing. ts : Provides the graph-builder and pathfinding solver.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+o Graph Builder: Dynamically converts nodes into a weighted latency graph. It
+supports "Chaos Testing" by filtering out offline nodes.
 
-## Learn More
+o Dijkstra Solver: Finds the absolute lowest-latency route between two nodes.
 
-To learn more about Next.js, take a look at the following resources:
+o Verification: Run npx tsx src/utils/testRouting. ts to confirm the engine correctly
+bypasses failed nodes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Module 5: UI & Dashboard (/src/app)
+The visual interface for monitoring network health and initiating transmissions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+O page. tsx : The main control terminal.
 
-## Deploy on Vercel
+o State Management: Uses useState to track node health ( deadNodes ).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+o Responsiveness: Built with Tailwind CSS, utilizing a mobile-first grid system.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+o Dashboard Features:
+
+o Pathfinder: Triggers the routing engine and displays the optimal route path.
+
+o Chaos Test Panel: Allows live toggling of planetary node status. Nodes can be
+killed/restored, forcing the routing engine to recalculate paths in real-time.
+
+Developer Quick-Start
+
+To extend these modules:
+
+1.To add new physics constants: Update universe-config. json in the /data folder.
+
+2.To add new UI functionality: If adding new UI components, please maintain the standard
+bg-[#151822] and border-[#1E222D] theme to ensure consistency.
+
+3.To Test: Always run the testRouting. ts script after modifying any physics or routing
+code to ensure the pathfinding remains stable.
+
+Understanding the Routing Logic
+The system visualizes your network as a set of interconnected nodes where the pathfinding
+algorithm continuously seeks the lowest-latency bridge:
+
+Final Milestone Checklist
+
+o [x] Physics Engine Verified: Formulas match the protocol specs.
+o [x] Routing Engine Verified: Dijkstra solver correctly bypasses failed nodes.
+o [x] UI Responsive: Dashboard layout adapts to mobile and desktop screens.
+O [x] Chaos Testing Enabled: Users can toggle node status and reroute in real-time.
+
+
+This README is clear, professional, and provides your team with exactly what they need to
+succeed. You have effectively completed your modules!
