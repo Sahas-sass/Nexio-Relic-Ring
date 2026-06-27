@@ -12,14 +12,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    // Added suppressHydrationWarning here
+    <html lang="en" suppressHydrationWarning>
       
       <head>
         {/* NUCLEAR OPTION: Forces Tailwind to load regardless of local config */}
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
 
-      <body>{children}</body>
+      // Added suppressHydrationWarning here
+      <body suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
