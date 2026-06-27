@@ -1,59 +1,25 @@
 "use client";
 import React, { useState } from "react";
 import { buildNetworkGraph, findShortestPath } from "../utils/routing";
+import { getConfig } from '../utils/configLoader';
 
-const Icons = {
-  Dashboard: () => (
-    <svg
-      width="20"
-      height="20"
-      className="shrink-0"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-      ></path>
+// Map Component
+export const OrbitalMap = () => {
+  const { nodes } = getConfig();
+
+  return (
+    <svg viewBox="0 0 800 400" className="w-full h-full bg-[#0B0E14] rounded-2xl">
+      {/* Draw Nodes */}
+      {nodes.map((node) => (
+        <g key={node.id}>
+          <circle cx={node.x} cy={node.y} r="8" fill="#0062FF" />
+          <text x={node.x + 12} y={node.y + 4} fill="#8A8D98" fontSize="12">
+            {node.id}
+          </text>
+        </g>
+      ))}
     </svg>
-  ),
-  Map: () => (
-    <svg
-      width="20"
-      height="20"
-      className="shrink-0"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-      ></path>
-    </svg>
-  ),
-  Logs: () => (
-    <svg
-      width="20"
-      height="20"
-      className="shrink-0"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M4 6h16M4 10h16M4 14h16M4 18h16"
-      ></path>
-    </svg>
-  ),
+  );
 };
 
 export default function Dashboard() {
@@ -92,30 +58,19 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#07090E] text-white font-sans">
-      <aside className="hidden md:flex w-[260px] bg-[#07090E] border-r border-[#1E222D] flex-col py-6 px-4 shrink-0">
-        <div className="flex items-center gap-3 px-4 mb-10">
-          <div className="w-8 h-8 rounded-lg bg-[#0062FF] flex items-center justify-center font-bold text-sm">
-            Z
-          </div>
-          <h1 className="text-xl font-bold">Zeta-26</h1>
-        </div>
-        <nav className="flex flex-col gap-2 px-2">
-          <button className="flex items-center gap-3 bg-[#0062FF] px-4 py-3 rounded-xl">
-            <Icons.Dashboard /> Dashboard
-          </button>
-          <button className="flex items-center gap-3 text-[#5A5D68] hover:text-white px-4 py-3 rounded-xl transition-all">
-            <Icons.Map /> Orbital Map
-          </button>
-          <button className="flex items-center gap-3 text-[#5A5D68] hover:text-white px-4 py-3 rounded-xl transition-all">
-            <Icons.Logs /> Network Logs
-          </button>
-        </nav>
-      </aside>
-
-      <main className="flex-1 p-8 overflow-y-auto">
+      {/* Sidebar removed, main content now spans full width */}
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full">
         <div className="max-w-6xl mx-auto space-y-6">
-          <header className="mb-8">
-            <h2 className="text-2xl font-bold">Control Terminal</h2>
+          <header className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">Control Terminal</h2>
+              <p className="text-sm text-[#5A5D68] mt-1">Zeta-26 Network Core</p>
+            </div>
+            {/* Optional: Added a small status indicator to replace the logo feel */}
+            <div className="flex items-center gap-2 bg-[#151822] border border-[#1E222D] px-4 py-2 rounded-xl">
+              <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></div>
+              <span className="text-xs text-[#8A8D98]">System Online</span>
+            </div>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -123,7 +78,7 @@ export default function Dashboard() {
               <h3 className="text-[#8A8D98] text-xs">Pathfinder</h3>
               <button
                 onClick={runRouting}
-                className="w-full bg-[#0062FF] py-3 rounded-xl font-medium"
+                className="w-full bg-[#0062FF] py-3 rounded-xl font-medium hover:bg-blue-600 transition-colors shadow-[0_0_15px_rgba(0,98,255,0.3)]"
               >
                 Calculate Jump
               </button>
@@ -133,7 +88,7 @@ export default function Dashboard() {
               <h3 className="text-[#8A8D98] text-xs mb-4">
                 Transmission Output
               </h3>
-              <div className="bg-[#0B0E14] p-4 rounded-xl font-mono text-sm text-[#10B981]">
+              <div className="bg-[#0B0E14] p-4 rounded-xl font-mono text-sm text-[#10B981] border border-[#1E222D]/50 shadow-inner">
                 {result}
               </div>
             </div>
@@ -153,7 +108,7 @@ export default function Dashboard() {
                     onClick={() => toggleNodeStatus(node)}
                     className={`px-4 py-2 rounded-xl text-sm border transition-all ${
                       isDead
-                        ? "bg-red-900/20 border-red-500 text-red-500"
+                        ? "bg-red-900/20 border-red-500 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.2)]"
                         : "bg-[#1E222D] border-[#2A2E39] text-white hover:border-[#0062FF]"
                     }`}
                   >
@@ -163,6 +118,15 @@ export default function Dashboard() {
               })}
             </div>
           </div>
+
+          {/* Map Visualization Section */}
+          <div className="bg-[#151822] rounded-3xl border border-[#1E222D] p-6 min-h-[300px]">
+            <h3 className="text-[#8A8D98] text-xs mb-4">Orbital Projection Map</h3>
+            <div className="h-[300px] border border-[#1E222D] rounded-2xl overflow-hidden shadow-inner">
+              <OrbitalMap />
+            </div>
+          </div>
+
         </div>
       </main>
     </div>
