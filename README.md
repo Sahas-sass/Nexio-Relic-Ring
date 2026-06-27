@@ -1,65 +1,156 @@
-Relic Ring Protocol: Core & Dashboard Documentation
+# Zeta-26: The Relic Ring Protocol
 
-This repository contains the core logic and interface for the Zeta-26 multi-hop optimization
-system.
+## Overview
 
-Module 1: Physics & Routing Engine (/src/utils)
+The **Relic Ring Protocol** is a resilient, physics-aware routing
+solution designed to restore communication across the **Zeta-26** star
+system. Following the catastrophic **Hyper-Flare of 3704**, which
+destroyed the quantum **Aether-Net**, the protocol reconnects fragmented
+planetary nodes using legacy fiber and laser infrastructure.
 
-The brain of the system, responsible for calculating optimal transmission paths while respecting
-physical constraints.
+------------------------------------------------------------------------
 
-O physics. ts : Implements the core relay equations, including Void Distance (L) and
-Crust Transit Time (Tp).
+## Technical Implementation
 
-o routing. ts : Provides the graph-builder and pathfinding solver.
+This project simulates a communication network based on the provided
+`universe-config.json`.
 
-o Graph Builder: Dynamically converts nodes into a weighted latency graph. It
-supports "Chaos Testing" by filtering out offline nodes.
+### 1. Core Mechanisms
 
-o Dijkstra Solver: Finds the absolute lowest-latency route between two nodes.
+#### Dynamic Configuration
 
-o Verification: Run npx tsx src/utils/testRouting. ts to confirm the engine correctly
-bypasses failed nodes.
+-   The system dynamically loads `universe-config.json`.
+-   No planetary values are hardcoded into the routing logic.
 
-Module 5: UI & Dashboard (/src/app)
-The visual interface for monitoring network health and initiating transmissions.
+#### Latency Engine
 
-O page. tsx : The main control terminal.
+Total latency (**T**) is calculated using four physical components:
 
-o State Management: Uses useState to track node health ( deadNodes ).
+1.  **Fiber Transit**
+    -   Data propagates through the equatorial fiber ring at **0.67 ×
+        c**.
+2.  **Tower Processing**
+    -   Every routing tower adds a fixed **7 ms** processing delay.
+3.  **Atmospheric Refraction**
+    -   Delay is computed using atmospheric thickness (**h**) and
+        refractive index (**n**).
+4.  **Void Transmission**
+    -   Laser communication through vacuum over distance (**L**) at the
+        speed of light (**c = 300,000 km/s**).
 
-o Responsiveness: Built with Tailwind CSS, utilizing a mobile-first grid system.
+#### Codex Conversion
 
-o Dashboard Features:
+-   Automatic translation between planetary dialects.
+-   Binary stream serialization enables interoperability across
+    heterogeneous planetary systems.
 
-o Pathfinder: Triggers the routing engine and displays the optimal route path.
+------------------------------------------------------------------------
 
-o Chaos Test Panel: Allows live toggling of planetary node status. Nodes can be
-killed/restored, forcing the routing engine to recalculate paths in real-time.
+### 2. Routing & Resilience
 
-Developer Quick-Start
+#### Shortest Path Routing
 
-To extend these modules:
+-   Uses **Dijkstra's Algorithm** to compute the minimum-latency route.
+-   Enforces the maximum transmission constraint:
 
-1.To add new physics constants: Update universe-config. json in the /data folder.
+```{=html}
+<!-- -->
+```
+    Lmax = 50,000,000 km
 
-2.To add new UI functionality: If adding new UI components, please maintain the standard
-bg-[#151822] and border-[#1E222D] theme to ensure consistency.
+#### Dynamic Rerouting
 
-3.To Test: Always run the testRouting. ts script after modifying any physics or routing
-code to ensure the pathfinding remains stable.
+-   Detects node failures in real time.
+-   Automatically reroutes traffic around failed nodes ("dead zones")
+    without packet loss.
 
-Understanding the Routing Logic
-The system visualizes your network as a set of interconnected nodes where the pathfinding
-algorithm continuously seeks the lowest-latency bridge:
+------------------------------------------------------------------------
 
-Final Milestone Checklist
+## System Constants & Assumptions
 
-o [x] Physics Engine Verified: Formulas match the protocol specs.
-o [x] Routing Engine Verified: Dijkstra solver correctly bypasses failed nodes.
-o [x] UI Responsive: Dashboard layout adapts to mobile and desktop screens.
-O [x] Chaos Testing Enabled: Users can toggle node status and reroute in real-time.
+-   Planets are modeled as **2D circles**.
+-   Routing towers are equally spaced around each planet.
+-   Void distance is calculated as:
 
+```{=html}
+<!-- -->
+```
+    Center-to-center distance
+    − Planetary radii
+    − Atmospheric shell thickness
 
-This README is clear, professional, and provides your team with exactly what they need to
-succeed. You have effectively completed your modules!
+-   Coordinates are scaled using:
+
+```{=html}
+<!-- -->
+```
+    coordinate_scale_unit_km
+
+------------------------------------------------------------------------
+
+## Demonstration Milestones
+
+### M1 -- Universe Initialization
+
+-   Load `universe-config.json`
+-   Initialize planetary network and routing architecture
+
+### M2 -- Multi-Hop Proof
+
+-   Demonstrate packet traversal across multiple planets
+-   Display Codex translation between planetary dialects
+
+### M3 -- Latency Breakdown
+
+-   Show detailed latency contribution from:
+    -   Fiber transit
+    -   Tower processing
+    -   Atmospheric refraction
+    -   Void transmission
+
+### M4 -- Chaos Test
+
+-   Manually disable ("kill") routing nodes
+-   Demonstrate successful automatic rerouting
+
+------------------------------------------------------------------------
+
+## Setup & Running
+
+### Clone the Repository
+
+``` bash
+git clone [your-repo-link]
+cd [repository-name]
+```
+
+### Install Dependencies
+
+``` bash
+npm install
+```
+
+### Start the Development Server
+
+``` bash
+npm run dev
+```
+
+### Open the Application
+
+Navigate to:
+
+    http://localhost:3000
+
+to access the **Control Terminal**.
+
+------------------------------------------------------------------------
+
+## Developed For
+
+**Launch26**
+
+**IEEE Computer Society Chapter**\
+**University of Kelaniya**
+
+**Team:** *\[Your Team Name\]*
