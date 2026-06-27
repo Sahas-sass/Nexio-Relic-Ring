@@ -73,3 +73,16 @@ export const findShortestPath = (startId: string, endId: string, graph: Record<s
   }
   return path;
 };
+
+export const calculateHopLatency = (p1: any, p2: any, meta: any) => {
+    // 1. Fiber: Arc distance / (0.67 * c)
+    // 2. Tower: 7ms
+    // 3. Atmosphere: (h * n) / c
+    // 4. Void: L / c
+    return {
+        fiber: 0.005, // Replace with your actual math
+        tower: 0.007,
+        atmosphere: 0.001,
+        void: 0.012
+    };
+};
