@@ -61,6 +61,7 @@ export const findShortestPath = (startId: string, endId: string, graph: Record<s
         previous[edge.to] = current;
       }
     });
+    console.log("Exploring graph state:", graph);
   }
 
   // Backtrack to find the path
