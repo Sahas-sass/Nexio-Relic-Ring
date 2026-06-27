@@ -1,4 +1,4 @@
-import "./globals.css"; // <-- THIS IS THE CRITICAL LINE
+import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,15 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // Added suppressHydrationWarning here
     <html lang="en" suppressHydrationWarning>
-      
       <head>
         {/* NUCLEAR OPTION: Forces Tailwind to load regardless of local config */}
         <script src="https://cdn.tailwindcss.com"></script>
       </head>
-
-      // Added suppressHydrationWarning here
       <body suppressHydrationWarning>
         {children}
       </body>
