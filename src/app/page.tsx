@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { buildNetworkGraph, findShortestPath } from "../utils/routing";
 import { getConfig } from '../utils/configLoader';
+import { textToAscii, asciiToCodex } from '../utils/codex';
 
 // Map Component
 export const OrbitalMap = () => {
@@ -25,14 +26,16 @@ export const OrbitalMap = () => {
 export default function Dashboard() {
   const [result, setResult] = useState<string>("System standing by...");
   const [deadNodes, setDeadNodes] = useState<string[]>([]);
-  const nodes = ["Aegis", "Boreas", "Dawn", "Elysium"]; // Should ideally match your config
+  const [message, setMessage] = useState<string>("ZETA_PROTOCOL_INIT");
+  const [encodedPayload, setEncodedPayload] = useState<string>("");
+  const nodes = ["Aegis", "Boreas", "Dawn", "Elysium"]; 
 
   const runRouting = () => {
     const graph = buildNetworkGraph(deadNodes);
 
-    // Check if start/end nodes even exist in the remaining graph
     if (!graph["Aegis"] || !graph["Elysium"]) {
       setResult("CRITICAL: Start or Destination node is offline!");
+      setEncodedPayload("");
       return;
     }
 
@@ -40,8 +43,14 @@ export default function Dashboard() {
 
     if (path.length <= 1) {
       setResult("ALERT: Network partitioned. No viable path to target.");
+      setEncodedPayload("");
     } else {
+      
       setResult(`Optimal Route: ${path.join(" → ")}`);
+      
+      const asciiArray = textToAscii(message);
+      const codexArray = asciiToCodex(asciiArray, 16); 
+      setEncodedPayload(`[${codexArray.join(', ')}]`);
     }
   };
 
@@ -66,7 +75,6 @@ export default function Dashboard() {
               <h2 className="text-2xl font-bold">Control Terminal</h2>
               <p className="text-sm text-[#5A5D68] mt-1">Zeta-26 Network Core</p>
             </div>
-            {/* Optional: Added a small status indicator to replace the logo feel */}
             <div className="flex items-center gap-2 bg-[#151822] border border-[#1E222D] px-4 py-2 rounded-xl">
               <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></div>
               <span className="text-xs text-[#8A8D98]">System Online</span>
@@ -74,23 +82,47 @@ export default function Dashboard() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* UPDATED: Pathfinder Card with Payload Input */}
             <div className="bg-[#151822] rounded-3xl border border-[#1E222D] p-6 space-y-4">
               <h3 className="text-[#8A8D98] text-xs">Pathfinder</h3>
+              
+              <div>
+                <label className="text-[10px] uppercase tracking-wider text-[#5A5D68] mb-1 block">Payload Message</label>
+                <input 
+                  type="text" 
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full bg-[#0B0E14] border border-[#1E222D] rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-[#0062FF]"
+                  placeholder="Enter message..."
+                />
+              </div>
+
               <button
                 onClick={runRouting}
                 className="w-full bg-[#0062FF] py-3 rounded-xl font-medium hover:bg-blue-600 transition-colors shadow-[0_0_15px_rgba(0,98,255,0.3)]"
               >
-                Calculate Jump
+                Transmit Payload
               </button>
             </div>
 
-            <div className="md:col-span-2 bg-[#151822] rounded-3xl border border-[#1E222D] p-6">
-              <h3 className="text-[#8A8D98] text-xs mb-4">
-                Transmission Output
-              </h3>
-              <div className="bg-[#0B0E14] p-4 rounded-xl font-mono text-sm text-[#10B981] border border-[#1E222D]/50 shadow-inner">
-                {result}
+            {/* UPDATED: Transmission Output with Encoded Payload */}
+            <div className="md:col-span-2 bg-[#151822] rounded-3xl border border-[#1E222D] p-6 flex flex-col justify-between">
+              <div>
+                <h3 className="text-[#8A8D98] text-xs mb-4">Transmission Output</h3>
+                <div className="bg-[#0B0E14] p-4 rounded-xl font-mono text-sm text-[#10B981] border border-[#1E222D]/50 shadow-inner">
+                  {result}
+                </div>
               </div>
+              
+              {encodedPayload && (
+                <div className="mt-4">
+                  <h3 className="text-[#8A8D98] text-xs mb-2">Encoded Data Stream (Hex/Base16)</h3>
+                  <div className="bg-[#0B0E14] p-4 rounded-xl font-mono text-xs text-[#5A5D68] break-all border border-[#1E222D]/50">
+                    {encodedPayload}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
